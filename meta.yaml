@@ -1,7 +1,9 @@
+{% set PIO_PKG_NAME = 'platform-atmelavr' %}
+{% set PKG_NAME = 'platformio-' + PIO_PKG_NAME %}
 {% set VERSION = '1.8.1.post1' %}
 {% set REPO = 'https://github.com/sci-bots/platform-atmelavr' %}
 {% set COMMIT = 'e80a6ae016df8de1d57e434f7d8a7e5620a135b9' %}
-{% set PKG_NAME = 'platform-atmelavr' %}
+{% set PKG_TYPE = 'platform' %}
 source:
   url: {{ REPO }}/archive/{{ COMMIT }}.tar.gz
 
@@ -15,7 +17,14 @@ build:
   number: 0
   noarch: true
   string: 'g{{ COMMIT[:8] }}'
-  script: python -c "import os.path; import os; import shutil; shutil.copytree(os.environ['SRC_DIR'], os.path.join(os.environ['PREFIX'], 'share', 'platformio', os.environ['PKG_NAME']));"
+  script:
+    python -c
+      "import os.path; import os; import shutil;
+      install_dir = os.path.join(os.environ['PREFIX'], 'share', 'platformio', '{{ PKG_TYPE }}s', '{{ PIO_PKG_NAME }}');
+      shutil.copytree(os.environ['SRC_DIR'], install_dir);
+      os.remove(os.path.join(install_dir, 'bld.bat'));  # [win]
+      os.remove(os.path.join(install_dir, 'build.sh'));  # [not win]
+      "
 
 requirements:
   build:
