@@ -1,0 +1,22 @@
+{% set VERSION = '1.8.1.post1' %}
+{% set REPO = 'https://github.com/sci-bots/platform-atmelavr' %}
+{% set COMMIT = 'e80a6ae016df8de1d57e434f7d8a7e5620a135b9' %}
+{% set PKG_NAME = 'platform-atmelavr' %}
+source:
+  url: {{ REPO }}/archive/{{ COMMIT }}.tar.gz
+
+package:
+  name: {{ PKG_NAME }}
+  version: {{ VERSION }}
+
+build:
+  # If this is a new build for the same version, increment the build
+  # number. If you do not include this key, it defaults to 0.
+  number: 0
+  noarch: true
+  string: 'g{{ COMMIT[:8] }}'
+  script: python -c "import os.path; import os; import shutil; shutil.copytree(os.environ['SRC_DIR'], os.path.join(os.environ['PREFIX'], 'share', 'platformio', os.environ['PKG_NAME']));"
+
+requirements:
+  build:
+    - python
